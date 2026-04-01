@@ -1,0 +1,25 @@
+---
+apiVersion: s3.spiarh.fr/v1alpha1
+kind: GarageBucket
+metadata:
+  labels:
+    app.kubernetes.io/name: garage-s3-operator
+    app.kubernetes.io/managed-by: kustomize
+  name: media
+  namespace: garage-system
+spec:
+  clusterRef:
+    name: garage-sample
+    namespace: garage-system
+  overrideName: media-prod
+  bucketAccessKey:
+    enabled: true
+    permissions:
+      owner: false
+      read: true
+      write: true
+    format: AWSConfig
+  quotas:
+    maxObjects: 100000
+    maxSize: 10737418240
+  reclaimPolicy: Retain

@@ -1,0 +1,60 @@
+---
+deployment:
+  kind: "StatefulSet"
+  replicaCount: 1
+
+image:
+  repository: dxflrs/arm64_garage
+
+persistence:
+  data:
+    storageClass: "standard"
+    size: "100Mi"
+  meta:
+    storageClass: "standard"
+    size: "100Mi"
+
+garage:
+  dbEngine: lmdb
+  blockSize: "1048576"
+  replicationFactor: "1"
+  consistencyMode: consistent
+  compressionLevel: "1"
+  metadataAutoSnapshotInterval: 6h
+  garageTomlString: |-
+    metadata_dir = "/mnt/meta"
+    data_dir = "/mnt/data"
+
+    db_engine = "{{ .Values.garage.dbEngine }}"
+
+    block_size = {{ .Values.garage.blockSize }}
+
+    replication_factor = {{ .Values.garage.replicationFactor }}
+    consistency_mode = "{{ .Values.garage.consistencyMode }}"
+
+    compression_level = {{ .Values.garage.compressionLevel }}
+
+    metadata_auto_snapshot_interval = {{ .Values.garage.metadataAutoSnapshotInterval | quote }}
+
+    rpc_bind_addr = "[::]:3901"
+    rpc_secret = "e816e67cbc1f5ae5d972babf24ae89783e3b97a0836bced5a4282b1c785c6a4f"
+
+    [kubernetes_discovery]
+    namespace = "{{ .Release.Namespace }}"
+    service_name = "{{ include "garage.fullname" . }}"
+    skip_crd = {{ .Values.garage.kubernetesSkipCrd }}
+
+    [s3_api]
+    s3_region = "garage"
+    api_bind_addr = "[::]:3900"
+    root_domain = ".s3.garage.localhost"
+
+    [s3_web]
+    bind_addr = "[::]:3902"
+    root_domain = ".web.garage.localhost"
+    index = "index.html"
+
+    [admin]
+    api_bind_addr = "[::]:3903"
+    admin_token = "aced9b835c6f45126293fa8cb0ac6854f6095b3ee51261ba042797758aac2bda"
+    metrics_token = "dbd68f6ae8e2ac61dc3eaf8c7f99695670fb5e173d7d37a3634855cfddb1ef67"

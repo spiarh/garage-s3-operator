@@ -1,0 +1,33 @@
+# This rule is not used by the project garage-s3-operator itself.
+# It is provided to allow the cluster admin to help manage garagepermissions for users.
+#
+# Grants garagepermissions to create, update, and delete resources within the s3.spiarh.fr.
+# This role is intended for users who need to manage these resources
+# but should not control RBAC or manage garagepermissions for others.
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: garage-s3-operator
+    app.kubernetes.io/managed-by: kustomize
+  name: accesskey-editor-role
+rules:
+- apiGroups:
+  - s3.spiarh.fr
+  resources:
+  - garageaccesskeys
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - s3.spiarh.fr
+  resources:
+  - garageaccesskeys/status
+  verbs:
+  - get

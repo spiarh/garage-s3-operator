@@ -1,0 +1,7 @@
+---
+apiVersion: v2
+name: garage-s3-operator-crds
+description: Helm chart to deploy  Garage Operator CustomResourceDefinitions
+type: application
+version: 0.1.0
+appVersion: "0.1.0"

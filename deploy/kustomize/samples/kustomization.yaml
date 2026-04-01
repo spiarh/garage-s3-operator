@@ -1,0 +1,7 @@
+## Append samples of your project ##
+resources:
+- garage_v1alpha1_garagecluster.yaml
+- garage_v1alpha1_garagebucket.yaml
+- garage_v1alpha1_garageaccesskey.yaml
+- garage_v1alpha1_garagepermission.yaml
+# +kubebuilder:scaffold:manifestskustomizesamples

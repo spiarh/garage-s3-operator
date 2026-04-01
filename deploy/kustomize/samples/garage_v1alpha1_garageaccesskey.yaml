@@ -1,0 +1,18 @@
+---
+apiVersion: s3.spiarh.fr/v1alpha1
+kind: GarageAccessKey
+metadata:
+  labels:
+    app.kubernetes.io/name: garage-s3-operator
+    app.kubernetes.io/managed-by: kustomize
+  name: app-key
+  namespace: garage-system
+spec:
+  clusterRef:
+    name: garage-sample
+    namespace: garage-system
+  overrideName: app
+  reclaimPolicy: Retain
+  secret:
+    name: app-key-credentials
+    format: AWSConfig

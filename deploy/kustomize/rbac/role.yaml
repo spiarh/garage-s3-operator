@@ -1,0 +1,53 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: manager-role
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - s3.spiarh.fr
+  resources:
+  - garageaccesskeys
+  - garagebuckets
+  - garageclusters
+  - garagepermissions
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - s3.spiarh.fr
+  resources:
+  - garageaccesskeys/finalizers
+  - garagebuckets/finalizers
+  - garageclusters/finalizers
+  - garagepermissions/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - s3.spiarh.fr
+  resources:
+  - garageaccesskeys/status
+  - garagebuckets/status
+  - garageclusters/status
+  - garagepermissions/status
+  verbs:
+  - get
+  - patch
+  - update

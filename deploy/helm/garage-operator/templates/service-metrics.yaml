@@ -1,0 +1,17 @@
+{{- if .Values.metricsService.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "garage-s3-operator.fullname" . }}-metrics
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "garage-s3-operator.labels" . | nindent 4 }}
+spec:
+  ports:
+    - name: https
+      port: {{ .Values.metricsService.port }}
+      protocol: TCP
+      targetPort: {{ .Values.metricsService.port }}
+  selector:
+    {{- include "garage-s3-operator.selectorLabels" . | nindent 4 }}
+{{- end }}

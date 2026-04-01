@@ -1,0 +1,20 @@
+---
+apiVersion: s3.spiarh.fr/v1alpha1
+kind: GarageCluster
+metadata:
+  labels:
+    app.kubernetes.io/name: garage-s3-operator
+    app.kubernetes.io/managed-by: kustomize
+  name: garage-sample
+  namespace: garage-system
+spec:
+  endpoint:
+    url: https://garage-admin.example.com
+    insecureSkipTLSVerify: false
+    endpointCA:
+      configMapRef:
+        name: garage-ca
+        key: ca.crt
+  adminTokenSecretRef:
+    name: garage-secrets
+    key: adminToken
