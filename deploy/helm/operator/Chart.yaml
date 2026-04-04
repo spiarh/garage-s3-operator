@@ -1,6 +1,7 @@
+---
 apiVersion: v2
 name: garage-s3-operator
-description: Helm chart for deploying the Garage Operator runtime resources
+description: Helm chart for deploying the Garage Operator
 type: application
 version: 0.1.0
 appVersion: "0.1.0"

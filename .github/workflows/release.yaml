@@ -21,7 +21,9 @@ defaults:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/garage-s3-operator
+  OPERATOR_IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/garage-s3-operator
+  HELM_OPERATOR_IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/helm-operator
+  HELM_CRDS_IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/helm-crds
 
 jobs:
   release:
@@ -39,11 +41,13 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Operator
       - name: Generate images meta
         id: meta
         uses: docker/metadata-action@030e881283bb7a6894de51c315a6bfe6a94e05cf #v6.0.0
-        with:
-          images: ${{ env.IMAGE_NAME }}
+        # with:
+        # images: ${{ env.OPERATOR_IMAGE_NAME }}
       - name: Publish multi-arch image
         uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 #v7.0.0
         id: build-push
@@ -54,11 +58,44 @@ jobs:
           file: ./Dockerfile
           # platforms: linux/amd64,linux/arm64
           platforms: linux/amd64
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ env.OPERATOR_IMAGE_NAME }}:${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
       - name: Generate artifact attestation
         uses: actions/attest@v4.1.0
         with:
-          subject-name: ${{ env.IMAGE_NAME}}
+          subject-name: ${{ env.OPERATOR_IMAGE_NAME}}
           subject-digest: ${{ steps.build-push.outputs.digest }}
+          push-to-registry: true
+
+      # Helm Chart CRD
+      - name: Publish Helm chart CRD to GHCR
+        id: helm-crds
+        run: |
+          HELM_VERSION=${{ steps.meta.outputs.tags }}
+          helm package --app-version ${{ steps.meta.outputs.VERSION }} --version ${HELM_VERSION} deploy/helm/crds
+          helm push ${HELM_VERSION}.tgz oci://ghcr.io/${{ github.repository_owner }}/helm-crds 2> .digest
+          DIGEST=$(cat .digest | awk -F "[, ]+" '/Digest/{print $NF}')
+          echo "DIGEST=${DIGEST}" >> $GITHUB_OUTPUT
+      - name: Generate artifact attestation for Helm Chart CRD
+        uses: actions/attest@v4.1.0
+        with:
+          subject-name: ${{ env.HELM_CRDS_IMAGE_NAME }}
+          subject-digest: ${{ steps.helm-crds.outputs.DIGEST }}
+          push-to-registry: true
+
+      # Helm Chart Operator
+      - name: Publish Helm chart Operator to GHCR
+        id: helm-operator
+        run: |
+          HELM_VERSION=${{ steps.meta.outputs.tags }}
+          yq -i '.image.digest = "${{ steps.build-push.outputs.DIGEST }}"' ../../deploy/helm/operator/values.yaml
+          helm package --app-version ${{ steps.meta.meta.VERSION }} --version ${HELM_VERSION} deploy/helm/operator
+          helm push ${HELM_VERSION}.tgz oci://ghcr.io/${{ github.repository_owner }}/helm-operator 2> .digest
+          DIGEST=$(cat .digest | awk -F "[, ]+" '/Digest/{print $NF}')
+          echo "DIGEST=${DIGEST}" >> $GITHUB_OUTPUT
+      - name: Generate artifact attestation for Helm Chart Operator
+        uses: actions/attest@v4.1.0
+        with:
+          subject-name: ${{ env.HELM_OPERATOR_IMAGE_NAME }}
+          subject-digest: ${{ steps.helm-operator.outputs.DIGEST }}
           push-to-registry: true
