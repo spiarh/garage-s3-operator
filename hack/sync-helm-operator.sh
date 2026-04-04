@@ -14,5 +14,6 @@ fi
 mkdir -p "$(dirname "${destination_file}")"
 printf '%b' "${header}" > "${destination_file}"
 cat "${source_file}" >> "${destination_file}"
+sed -i '' 's@name: manager-role@name: {{ include \"garage-s3-operator.fullname\" . }}-manager@' "${destination_file}"
 
 echo "Synced $(basename "${source_file}") to $(basename "${destination_file}")"

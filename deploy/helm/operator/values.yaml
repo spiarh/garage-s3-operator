@@ -2,7 +2,8 @@
 replicaCount: 1
 
 image:
-  repository: controller
+  repository: ghcr.io
+  repository: spiarh/garage-s3-operator
   tag: latest
   pullPolicy: IfNotPresent
 
@@ -13,9 +14,9 @@ serviceAccount:
 podAnnotations: {}
 
 resources:
-  limits:
-    cpu: 500m
-    memory: 128Mi
+  # limits:
+  #   cpu: 500m
+  #   memory: 128Mi
   requests:
     cpu: 10m
     memory: 64Mi
@@ -33,6 +34,7 @@ securityContext:
       - ALL
 
 metricsService:
+  # TODO: variabilise auth
   enabled: true
   port: 8443
 
