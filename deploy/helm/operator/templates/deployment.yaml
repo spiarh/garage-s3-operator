@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: manager
-          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}{{- if .Values.image.digest }}@{{ .Values.image.digest }}{{- end }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
             - /manager
