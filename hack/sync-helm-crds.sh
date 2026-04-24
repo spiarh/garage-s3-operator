@@ -3,7 +3,7 @@ set -euo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source_dir="${repo_root}/deploy/kustomize/crd/bases"
-destination_dir="${repo_root}/deploy/helm/garage-s3-operator-crds/templates"
+destination_dir="${repo_root}/deploy/helm/crds/templates"
 
 mkdir -p "${destination_dir}"
 rm -f "${destination_dir}"/*.yaml

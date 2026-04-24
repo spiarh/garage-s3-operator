@@ -20,13 +20,9 @@ spec:
       labels:
         {{- include "garage-s3-operator.selectorLabels" . | nindent 8 }}
     spec:
-      serviceAccountName: {{ include "garage-s3-operator.serviceAccountName" . }}
-      terminationGracePeriodSeconds: 10
-      securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: manager
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}{{- if .Values.image.digest }}@{{ .Values.image.digest }}{{- end }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
             - /manager
@@ -52,4 +48,8 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts: []
+      serviceAccountName: {{ include "garage-s3-operator.serviceAccountName" . }}
+      terminationGracePeriodSeconds: 10
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
       volumes: []
