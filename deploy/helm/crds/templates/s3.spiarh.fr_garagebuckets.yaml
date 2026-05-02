@@ -39,20 +39,11 @@ spec:
           spec:
             description: spec defines the desired state of Bucket
             properties:
-              clusterRef:
-                properties:
-                  name:
-                    type: string
-                  namespace:
-                    type: string
-                required:
-                - name
-                type: object
-              createKey:
+              bucketAccessKey:
                 properties:
                   enabled:
                     type: boolean
-                  overrideName:
+                  format:
                     type: string
                   permissions:
                     properties:
@@ -67,15 +58,17 @@ spec:
                     - read
                     - write
                     type: object
-                  secret:
-                    properties:
-                      format:
-                        type: string
-                      name:
-                        type: string
-                    type: object
                 required:
                 - enabled
+                type: object
+              clusterRef:
+                properties:
+                  name:
+                    type: string
+                  namespace:
+                    type: string
+                required:
+                - name
                 type: object
               overrideName:
                 type: string
