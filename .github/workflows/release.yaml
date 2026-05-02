@@ -21,7 +21,7 @@ defaults:
 
 env:
   REGISTRY: ghcr.io
-  OPERATOR_IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/garage-s3-operator/operator
+  OPERATOR_IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/garage-s3-operator
   HELM_REPO_BASE: ghcr.io/${{ github.repository_owner }}/helm
   HELM_OPERATOR_IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/helm/garage-s3-operator
   HELM_CRDS_IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/helm/garage-s3-operator-crds
